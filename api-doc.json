@@ -1,0 +1,2920 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "External RESTful APIs to access DUPR ratings, users and provide matches.",
+        "version": "v1.0.0",
+        "title": "DUPR APIs"
+    },
+    "host": "https://prod.mydupr.com",
+    "tags": [
+        {
+            "name": "ApiRegistration",
+            "description": "Client Hook Controller V 2"
+        },
+        {
+            "name": "Authentication",
+            "description": "Authenticate using client secret and key to get access token."
+        },
+        {
+            "name": "Club",
+            "description": "Resources to access DUPR Club data."
+        },
+        {
+            "name": "Match",
+            "description": "Resources to access DUPR match data."
+        },
+        {
+            "name": "Player",
+            "description": "Resources to access DUPR Player data."
+        },
+        {
+            "name": "Player Rating",
+            "description": "Resources to access DUPR Player rating data."
+        },
+        {
+            "name": "Users",
+            "description": "Resources to access DUPR user's data."
+        }
+    ],
+    "paths": {
+        "/api/auth/{version}/token": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Generate Access Token",
+                "description": "Use provided client key and secret to generate short lived access token. Access token is mandatory to use all the other resources.",
+                "operationId": "loginUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    },
+                    {
+                        "name": "x-authorization",
+                        "in": "header",
+                        "description": "x-authorization",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/SingleWrapperOfTokenResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/club/{version}/members": {
+            "post": {
+                "tags": [
+                    "Club"
+                ],
+                "summary": "Club Members Rating",
+                "description": "This API provide ratings of all members of the club.",
+                "operationId": "clubMembersRatingUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "request",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExternalClubMemberRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ArrayWrapperOfExternalUserDetailResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/match/history/search": {
+            "post": {
+                "tags": [
+                    "Match"
+                ],
+                "summary": "Get Match History",
+                "description": "This API displays the match history for the specified player",
+                "operationId": "searchMatchHistoryUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "request",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExternalMatchSearchRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/match/{version}/batch": {
+            "post": {
+                "tags": [
+                    "Match"
+                ],
+                "summary": "Create Match in Bulk",
+                "description": "This API allow to create a matches in bulk. It returns unique match ids in response in same order as they were sent.",
+                "operationId": "saveMatchInBulkUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "payload",
+                        "description": "payload",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ExternalMatchRequest"
+                            }
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/match/{version}/create": {
+            "post": {
+                "tags": [
+                    "Match"
+                ],
+                "summary": "Create Match",
+                "description": "This API allow to create a match. It returns unique match id in response.",
+                "operationId": "saveMatchUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "payload",
+                        "description": "payload",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExternalMatchRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/match/{version}/delete": {
+            "delete": {
+                "tags": [
+                    "Match"
+                ],
+                "summary": "Delete Match",
+                "description": "This API allows to delete an existing match.",
+                "operationId": "deleteMatchUsingDELETE",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "payload",
+                        "description": "payload",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExternalDeleteMatchRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/match/{version}/update": {
+            "post": {
+                "tags": [
+                    "Match"
+                ],
+                "summary": "Update a match",
+                "description": "This API allows a client to update a match by its ID.",
+                "operationId": "updateMatchUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "payload",
+                        "description": "payload",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExternalUpdateMatchRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/match/{version}/{id}": {
+            "get": {
+                "tags": [
+                    "Match"
+                ],
+                "summary": "viewMatch",
+                "operationId": "viewMatchUsingGET",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/user/{version}/invite": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Pre-generate a dupr ID and invite a user to join",
+                "operationId": "inviteUserUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "inviteRequest",
+                        "description": "inviteRequest",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExternalInviteRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/user/{version}/provisional_rating": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get the provisional rating for a player",
+                "operationId": "getUserProvisionalRatingUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "request",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/GetProvisionalRatingRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/user/{version}/provisional_rating/create": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Set the provisional rating for a player",
+                "operationId": "createUserProvisionalRatingUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "initialRating",
+                        "description": "initialRating",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CreateProvisionalRatingRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/user/{version}/provisional_rating/delete": {
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete the provisional rating for a player",
+                "operationId": "deleteUserProvisionalRatingUsingDELETE",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "request",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DeleteProvisionalRatingRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/user/{version}/provisional_rating/update": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Set the provisional rating for a player",
+                "operationId": "updateUserProvisionalRatingUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "newRating",
+                        "description": "newRating",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateProvisionalRatingRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/user/{version}/search": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User Search",
+                "description": "This API does full-text search on user names and it returns user full names and respective DUPR IDs",
+                "operationId": "userSearchUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "request",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExternalSearchRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/SingleWrapperOfPageOfExternalUserResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/user/{version}/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User Info",
+                "description": "This API provides details like full name, singles and doubles ratings with provisional ratings flags. It requires DUPR ID as an input.",
+                "operationId": "userDetailUsingGET",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/SingleWrapperOfExternalUserDetailResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/user/{version}/{id}/clubs": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Retrieve the club membership for a user by DUPR Id",
+                "operationId": "getClubMembershipByDuprIdUsingGET",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/{version}/player": {
+            "post": {
+                "tags": [
+                    "Player"
+                ],
+                "summary": "Players Rating",
+                "description": "This API provide ratings of all members of the club.",
+                "operationId": "getRankOfPlayersUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "request",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PlayersSortedRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ArrayWrapperOfPlayerResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/{version}/player/duprid-by-email": {
+            "post": {
+                "tags": [
+                    "Player"
+                ],
+                "summary": "Get DUPR ID by Email",
+                "description": "Finds the Player's DUPR ID based on Email.",
+                "operationId": "getPlayerDUPRIdByEmailUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "request",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/FindDuprIdByEmailRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/{version}/subscribe/rating-changes": {
+            "get": {
+                "tags": [
+                    "Player Rating"
+                ],
+                "summary": "Fetch Players subscription by Client",
+                "description": "Return a list of Players based on the client.",
+                "operationId": "getClientPlayersSubscriptionUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ArrayWrapperOfUser"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Player Rating"
+                ],
+                "summary": "Subscribe players rating",
+                "description": "This API receives a list of Player ids and relates the Client and the Player, after any\n                rating change on the player, the client will receive a request in the webhook endpoint.",
+                "operationId": "subscribePlayerRatingUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "players",
+                        "description": "players",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/SingleWrapperOfUnit"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Player Rating"
+                ],
+                "summary": "Removes players rating",
+                "description": "This API receives a list of Player ids and removes the relationship between it with the Client.",
+                "operationId": "removePlayerSubscriptionUsingDELETE",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "players",
+                        "description": "players",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/SingleWrapperOfUnit"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/{version}/topic": {
+            "get": {
+                "tags": [
+                    "ApiRegistration"
+                ],
+                "summary": "getAll",
+                "operationId": "getAllUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/{version}/webhook": {
+            "post": {
+                "tags": [
+                    "ApiRegistration"
+                ],
+                "summary": "register",
+                "operationId": "registerUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "request",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ClientHookRequest"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "description": "version",
+                        "required": true,
+                        "type": "string",
+                        "default": "v1.0"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ArrayWrapperOfExternalUserDetailResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Show this message to user."
+                },
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ExternalUserDetailResponse"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "FAILURE",
+                        "REDIRECT",
+                        "SUCCESS"
+                    ]
+                }
+            },
+            "title": "ArrayWrapperOfExternalUserDetailResponse"
+        },
+        "ArrayWrapperOfPlayerResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Show this message to user."
+                },
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PlayerResponse"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "FAILURE",
+                        "REDIRECT",
+                        "SUCCESS"
+                    ]
+                }
+            },
+            "title": "ArrayWrapperOfPlayerResponse"
+        },
+        "ArrayWrapperOfUser": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Show this message to user."
+                },
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/User"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "FAILURE",
+                        "REDIRECT",
+                        "SUCCESS"
+                    ]
+                }
+            },
+            "title": "ArrayWrapperOfUser"
+        },
+        "ClientHookRequest": {
+            "type": "object",
+            "required": [
+                "clientId",
+                "topics",
+                "webhookUrl"
+            ],
+            "properties": {
+                "clientId": {
+                    "type": "string"
+                },
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "webhookUrl": {
+                    "type": "string"
+                }
+            },
+            "title": "ClientHookRequest"
+        },
+        "CreateProvisionalRatingRequest": {
+            "type": "object",
+            "required": [
+                "duprId"
+            ],
+            "properties": {
+                "duprId": {
+                    "type": "string",
+                    "example": "DXJDF"
+                },
+                "provisionalDoublesRating": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 3.5
+                },
+                "provisionalSinglesRating": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 3.5
+                }
+            },
+            "title": "CreateProvisionalRatingRequest"
+        },
+        "DeleteProvisionalRatingRequest": {
+            "type": "object",
+            "required": [
+                "duprId"
+            ],
+            "properties": {
+                "duprId": {
+                    "type": "string",
+                    "example": "DXJDF"
+                }
+            },
+            "title": "DeleteProvisionalRatingRequest"
+        },
+        "ExternalAgeRangeFilter": {
+            "type": "object",
+            "required": [
+                "max",
+                "min"
+            ],
+            "properties": {
+                "max": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 25,
+                    "description": "Maximum age value of a user"
+                },
+                "min": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 18,
+                    "description": "Minimum age value of a user"
+                }
+            },
+            "title": "ExternalAgeRangeFilter"
+        },
+        "ExternalClubMemberRequest": {
+            "type": "object",
+            "required": [
+                "clubId"
+            ],
+            "properties": {
+                "clubId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 102387102937,
+                    "description": "DUPR Club ID"
+                }
+            },
+            "title": "ExternalClubMemberRequest"
+        },
+        "ExternalDeleteMatchRequest": {
+            "type": "object",
+            "required": [
+                "identifier",
+                "matchCode"
+            ],
+            "properties": {
+                "identifier": {
+                    "type": "string",
+                    "example": "unique-identifier",
+                    "description": "An unique identifier for this match"
+                },
+                "matchCode": {
+                    "type": "string",
+                    "example": "match-code",
+                    "description": "An unique match code returned at time of creation"
+                }
+            },
+            "title": "ExternalDeleteMatchRequest"
+        },
+        "ExternalFilterLocation": {
+            "type": "object",
+            "required": [
+                "address",
+                "lat",
+                "lng",
+                "radiusInMeters"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "Austin, TX, USA",
+                    "description": "Street level address in format county / city, state / region, country"
+                },
+                "lat": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 72.34654645455,
+                    "description": "Earth's latitude value",
+                    "minimum": -90,
+                    "maximum": 90,
+                    "exclusiveMinimum": false,
+                    "exclusiveMaximum": false
+                },
+                "lng": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 19.55151584984,
+                    "description": "Earth's longitude value",
+                    "minimum": -180,
+                    "maximum": 180,
+                    "exclusiveMinimum": false,
+                    "exclusiveMaximum": false
+                },
+                "radiusInMeters": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 40233.6,
+                    "description": "Radius distance in meters from the point of provided latitude and longitude, default is 40233.6 meters (25 miles)"
+                }
+            },
+            "title": "ExternalFilterLocation"
+        },
+        "ExternalInviteRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "fullName": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "identifier": {
+                    "type": "string",
+                    "example": 12345
+                },
+                "isoCode": {
+                    "type": "string",
+                    "example": "US"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "+19876543210"
+                }
+            },
+            "title": "ExternalInviteRequest"
+        },
+        "ExternalMatchRequest": {
+            "type": "object",
+            "required": [
+                "event",
+                "format",
+                "identifier",
+                "matchDate",
+                "teamA",
+                "teamB"
+            ],
+            "properties": {
+                "bracket": {
+                    "type": "string",
+                    "example": "Bracket name",
+                    "description": "Bracket name in which this match was played"
+                },
+                "clubId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 7614955351,
+                    "description": "DUPR Club unique identifier"
+                },
+                "event": {
+                    "type": "string",
+                    "example": "Event name",
+                    "description": "Event name in which this match was played"
+                },
+                "extras": {
+                    "type": "object",
+                    "example": {
+                        "key1": "value1",
+                        "key2": "value2"
+                    },
+                    "description": "Extra parameters in key value pairs",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "format": {
+                    "type": "string",
+                    "example": "SINGLES",
+                    "description": "Match format Singles or Doubles",
+                    "enum": [
+                        "DOUBLES",
+                        "SINGLES"
+                    ]
+                },
+                "identifier": {
+                    "type": "string",
+                    "example": "unique-identifier",
+                    "description": "An unique identifier for this match"
+                },
+                "location": {
+                    "type": "string",
+                    "example": "Newport Beach, CA"
+                },
+                "matchDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "yyyy-MM-dd",
+                    "description": "Match date must be in ISO 8061 format date i.e. yyyy-MM-dd"
+                },
+                "matchSource": {
+                    "type": "string",
+                    "example": "CLUB",
+                    "description": "The source of the match; see the enum array for allowed values",
+                    "enum": [
+                        "CLUB",
+                        "DUPR",
+                        "LEAGUE",
+                        "PARTNER"
+                    ]
+                },
+                "matchType": {
+                    "type": "string",
+                    "example": "SIDEOUT",
+                    "description": "MatchTypes can be a value between RALLY or SIDEOUT",
+                    "enum": [
+                        "RALLY",
+                        "SIDEOUT"
+                    ]
+                },
+                "teamA": {
+                    "$ref": "#/definitions/ExternalMatchTeam"
+                },
+                "teamB": {
+                    "$ref": "#/definitions/ExternalMatchTeam"
+                }
+            },
+            "title": "ExternalMatchRequest"
+        },
+        "ExternalMatchSearchRequest": {
+            "type": "object",
+            "required": [
+                "endDate",
+                "startDate"
+            ],
+            "properties": {
+                "duprId": {
+                    "type": "string",
+                    "example": "KJHFAH"
+                },
+                "endDate": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1724100043,
+                    "description": "The end date in epoch seconds"
+                },
+                "eventFormat": {
+                    "type": "array",
+                    "example": [
+                        "SINGLES",
+                        "DOUBLES"
+                    ],
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "DOUBLES",
+                            "SINGLES"
+                        ]
+                    }
+                },
+                "limit": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 3
+                },
+                "offset": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 0
+                },
+                "startDate": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1724099943,
+                    "description": "The start date in epoch seconds"
+                }
+            },
+            "title": "ExternalMatchSearchRequest"
+        },
+        "ExternalMatchTeam": {
+            "type": "object",
+            "required": [
+                "game1",
+                "player1"
+            ],
+            "properties": {
+                "game1": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 7,
+                    "description": "Team's Game 1 score"
+                },
+                "game2": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 11,
+                    "description": "Team's Game 2 score"
+                },
+                "game3": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 0,
+                    "description": "Team's Game 3 score"
+                },
+                "game4": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 0,
+                    "description": "Team's Game 4 score"
+                },
+                "game5": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 0,
+                    "description": "Team's Game 5 score"
+                },
+                "player1": {
+                    "type": "string",
+                    "example": "L8EW8W",
+                    "description": "DUPR ID of player 1"
+                },
+                "player2": {
+                    "type": "string",
+                    "example": "O8GJV8",
+                    "description": "DUPR ID of player 2, in case of singles it can be null"
+                }
+            },
+            "title": "ExternalMatchTeam"
+        },
+        "ExternalRatingFilter": {
+            "type": "object",
+            "required": [
+                "max",
+                "min"
+            ],
+            "properties": {
+                "max": {
+                    "type": "number",
+                    "example": 3.3,
+                    "description": "Maximum value of user ratings can be up to 8.0",
+                    "minimum": 2.0,
+                    "maximum": 8.0,
+                    "exclusiveMinimum": false,
+                    "exclusiveMaximum": false
+                },
+                "min": {
+                    "type": "number",
+                    "example": 2.3,
+                    "description": "Minimum value of user ratings can be down to 2.0",
+                    "minimum": 2.0,
+                    "maximum": 8.0,
+                    "exclusiveMinimum": false,
+                    "exclusiveMaximum": false
+                },
+                "reliable": {
+                    "type": "boolean",
+                    "description": "Ratings should be reliable or not, by default null which means it is not considered"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "DOUBLES",
+                    "description": "Type of ratings to apply min and max values, one of the value from following array.",
+                    "enum": [
+                        "DOUBLES",
+                        "SINGLES"
+                    ]
+                }
+            },
+            "title": "ExternalRatingFilter"
+        },
+        "ExternalSearchFilter": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "description": "Filter users by their age",
+                    "$ref": "#/definitions/ExternalAgeRangeFilter"
+                },
+                "gender": {
+                    "type": "string",
+                    "example": "MALE",
+                    "description": "Value must be exact match from the following array.",
+                    "minLength": 4,
+                    "maxLength": 6,
+                    "pattern": "^(?:male|female)$"
+                },
+                "location": {
+                    "description": "Latitude and longitude of a place with radius to filter by approximate area",
+                    "$ref": "#/definitions/ExternalFilterLocation"
+                },
+                "rating": {
+                    "description": "Filter users by their ratings",
+                    "$ref": "#/definitions/ExternalRatingFilter"
+                }
+            },
+            "title": "ExternalSearchFilter"
+        },
+        "ExternalSearchRequest": {
+            "type": "object",
+            "required": [
+                "limit",
+                "offset",
+                "query"
+            ],
+            "properties": {
+                "filters": {
+                    "description": "Criteria to search specific users",
+                    "$ref": "#/definitions/ExternalSearchFilter"
+                },
+                "limit": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 25,
+                    "description": "Number of results in a page",
+                    "maximum": 100,
+                    "exclusiveMaximum": false
+                },
+                "offset": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 0,
+                    "description": "Starting offset to paginate results"
+                },
+                "query": {
+                    "type": "string",
+                    "example": "*",
+                    "description": "User full or partial name to get details"
+                }
+            },
+            "title": "ExternalSearchRequest"
+        },
+        "ExternalUpdateMatchRequest": {
+            "type": "object",
+            "required": [
+                "event",
+                "format",
+                "identifier",
+                "matchDate",
+                "matchId",
+                "teamA",
+                "teamB"
+            ],
+            "properties": {
+                "bracket": {
+                    "type": "string",
+                    "example": "Bracket name",
+                    "description": "Bracket name in which this match was played"
+                },
+                "clubId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 7614955351,
+                    "description": "DUPR Club unique identifier"
+                },
+                "event": {
+                    "type": "string",
+                    "example": "Event name",
+                    "description": "Event name in which this match was played"
+                },
+                "extras": {
+                    "type": "object",
+                    "example": {
+                        "key1": "value1",
+                        "key2": "value2"
+                    },
+                    "description": "Extra parameters in key value pairs",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "format": {
+                    "type": "string",
+                    "example": "SINGLES",
+                    "description": "Match format Singles or Doubles",
+                    "enum": [
+                        "DOUBLES",
+                        "SINGLES"
+                    ]
+                },
+                "identifier": {
+                    "type": "string",
+                    "example": "unique-identifier",
+                    "description": "An unique identifier for this match"
+                },
+                "location": {
+                    "type": "string",
+                    "example": "Newport Beach, CA"
+                },
+                "matchDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "yyyy-MM-dd",
+                    "description": "Match date must be in ISO 8061 format date i.e. yyyy-MM-dd"
+                },
+                "matchId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 12345
+                },
+                "matchSource": {
+                    "type": "string",
+                    "example": "DUPR/CLUB",
+                    "description": "Match source can be a value between CLUB or DUPR",
+                    "enum": [
+                        "CLUB",
+                        "DUPR",
+                        "LEAGUE",
+                        "PARTNER"
+                    ]
+                },
+                "matchType": {
+                    "type": "string",
+                    "example": "SIDEOUT",
+                    "description": "MatchTypes can be a value between RALLY or SIDEOUT",
+                    "enum": [
+                        "RALLY",
+                        "SIDEOUT"
+                    ]
+                },
+                "teamA": {
+                    "$ref": "#/definitions/ExternalMatchTeam"
+                },
+                "teamB": {
+                    "$ref": "#/definitions/ExternalMatchTeam"
+                }
+            },
+            "title": "ExternalUpdateMatchRequest"
+        },
+        "ExternalUserDetailResponse": {
+            "type": "object",
+            "required": [
+                "firstName",
+                "fullName",
+                "id",
+                "lastName",
+                "performance",
+                "ratings"
+            ],
+            "properties": {
+                "firstName": {
+                    "type": "string",
+                    "example": "John"
+                },
+                "fullName": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "XOME32"
+                },
+                "lastName": {
+                    "type": "string",
+                    "example": "Doe"
+                },
+                "performance": {
+                    "$ref": "#/definitions/ExternalUserPerformance"
+                },
+                "ratings": {
+                    "type": "object"
+                }
+            },
+            "title": "ExternalUserDetailResponse"
+        },
+        "ExternalUserPerformance": {
+            "type": "object",
+            "required": [
+                "doubles",
+                "singles"
+            ],
+            "properties": {
+                "doubles": {
+                    "$ref": "#/definitions/WinLossCount"
+                },
+                "singles": {
+                    "$ref": "#/definitions/WinLossCount"
+                }
+            },
+            "title": "ExternalUserPerformance"
+        },
+        "ExternalUserRatingResponse": {
+            "type": "object",
+            "properties": {
+                "doubles": {
+                    "type": "string",
+                    "example": 2.864
+                },
+                "doublesHalfLife": {
+                    "type": "number",
+                    "example": 20.14,
+                    "description": "The doubles half life for the user, if available"
+                },
+                "doublesReliabilityScore": {
+                    "type": "number",
+                    "example": 2.5
+                },
+                "isDoublesReliable": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "Is doubles rating reliable"
+                },
+                "isSinglesReliable": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Is singles rating reliable"
+                },
+                "provisionalRatings": {
+                    "description": "The provisional rating for the user, if available",
+                    "$ref": "#/definitions/ProvisionalRating"
+                },
+                "singles": {
+                    "type": "string",
+                    "example": 4.125
+                },
+                "singlesHalfLife": {
+                    "type": "number",
+                    "example": 15.05,
+                    "description": "The singles half life for the user, if available"
+                },
+                "singlesReliabilityScore": {
+                    "type": "number",
+                    "example": 2.5
+                }
+            },
+            "title": "ExternalUserRatingResponse"
+        },
+        "ExternalUserResponse": {
+            "type": "object",
+            "required": [
+                "firstName",
+                "fullName",
+                "id",
+                "lastName"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "Austin, TX, USA",
+                    "description": "User location usually in form of city, state, country."
+                },
+                "age": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 24,
+                    "description": "User's age"
+                },
+                "firstName": {
+                    "type": "string",
+                    "example": "John",
+                    "description": "First name of the user"
+                },
+                "fullName": {
+                    "type": "string",
+                    "example": "John Doe",
+                    "description": "Full name of user"
+                },
+                "gender": {
+                    "type": "string",
+                    "example": "MALE",
+                    "description": "User's gender",
+                    "enum": [
+                        "FEMALE",
+                        "MALE"
+                    ]
+                },
+                "id": {
+                    "type": "string",
+                    "example": "XOME32",
+                    "description": "Unique identifier"
+                },
+                "lastName": {
+                    "type": "string",
+                    "example": "Doe",
+                    "description": "Last name of the user"
+                },
+                "ratings": {
+                    "$ref": "#/definitions/ExternalUserRatingResponse"
+                }
+            },
+            "title": "ExternalUserResponse"
+        },
+        "FindDuprIdByEmailRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            },
+            "title": "FindDuprIdByEmailRequest"
+        },
+        "GetProvisionalRatingRequest": {
+            "type": "object",
+            "required": [
+                "duprId"
+            ],
+            "properties": {
+                "duprId": {
+                    "type": "string",
+                    "example": "DXJDF"
+                }
+            },
+            "title": "GetProvisionalRatingRequest"
+        },
+        "GrantedAuthority": {
+            "type": "object",
+            "properties": {
+                "authority": {
+                    "type": "string"
+                }
+            },
+            "title": "GrantedAuthority"
+        },
+        "PageOfExternalUserResponse": {
+            "type": "object",
+            "required": [
+                "empty",
+                "hasMore",
+                "hasPrevious",
+                "limit",
+                "offset",
+                "total",
+                "totalValueRelation"
+            ],
+            "properties": {
+                "empty": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "Are results empty"
+                },
+                "hasMore": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "Are there any more results to fetch"
+                },
+                "hasPrevious": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Is there any previous page"
+                },
+                "hits": {
+                    "type": "array",
+                    "description": "Array of results, can be empty.",
+                    "items": {
+                        "$ref": "#/definitions/ExternalUserResponse"
+                    }
+                },
+                "limit": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 10,
+                    "description": "Limit value you sent in the request"
+                },
+                "offset": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 90,
+                    "description": "Offset value you sent in the request"
+                },
+                "total": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 100,
+                    "description": "Total number of results available in database"
+                },
+                "totalValueRelation": {
+                    "type": "string",
+                    "example": "GREATER_THAN_OR_EQUAL_TO",
+                    "description": "Relation to total results available.",
+                    "enum": [
+                        "EQUAL_TO",
+                        "GREATER_THAN_OR_EQUAL_TO"
+                    ]
+                }
+            },
+            "title": "PageOfExternalUserResponse"
+        },
+        "Participant": {
+            "type": "object",
+            "required": [
+                "clubMember",
+                "fullName",
+                "isSubstitute",
+                "isWaitListed",
+                "paymentRefunded",
+                "refundAmount"
+            ],
+            "properties": {
+                "clubMember": {
+                    "type": "boolean"
+                },
+                "displayUsername": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "fullName": {
+                    "type": "string",
+                    "example": "Brian Lara"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 26518181881
+                },
+                "isRegistered": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "isSubstitute": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "isWaitListed": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "partnerStatus": {
+                    "type": "string",
+                    "example": "NOT_ADDED/CONFIRMED/NOT_CONFIRMED/PAYMENT_DUE"
+                },
+                "paymentDue": {
+                    "type": "string",
+                    "example": "2021-12-01"
+                },
+                "paymentRefunded": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "paymentStatus": {
+                    "type": "string",
+                    "example": "PENDING/COMPLETE",
+                    "enum": [
+                        "ACTIVE",
+                        "CANCELLED",
+                        "COMPLETE",
+                        "CONFIRMED",
+                        "DELETED",
+                        "FORFEITED",
+                        "INACTIVE",
+                        "INVITED",
+                        "IN_PROGRESS",
+                        "MATCH_BYE",
+                        "NOT_CONFIRMED",
+                        "ONGOING",
+                        "PENDING",
+                        "SUSPENDED_TOS_13",
+                        "UPCOMING"
+                    ]
+                },
+                "refundAmount": {
+                    "type": "number",
+                    "example": "true/false"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "NOT_ADDED/CONFIRMED/NOT_CONFIRMED/PAYMENT_DUE",
+                    "enum": [
+                        "ACTIVE",
+                        "CANCELLED",
+                        "COMPLETE",
+                        "CONFIRMED",
+                        "DELETED",
+                        "FORFEITED",
+                        "INACTIVE",
+                        "INVITED",
+                        "IN_PROGRESS",
+                        "MATCH_BYE",
+                        "NOT_CONFIRMED",
+                        "ONGOING",
+                        "PENDING",
+                        "SUSPENDED_TOS_13",
+                        "UPCOMING"
+                    ]
+                },
+                "username": {
+                    "type": "string",
+                    "example": "X AE A-XII"
+                }
+            },
+            "title": "Participant"
+        },
+        "Permission": {
+            "type": "object",
+            "properties": {
+                "operation": {
+                    "type": "string"
+                },
+                "resource": {
+                    "type": "string"
+                }
+            },
+            "title": "Permission"
+        },
+        "PlayerRatingResponse": {
+            "type": "object",
+            "properties": {
+                "defaultRating": {
+                    "type": "string",
+                    "example": "DOUBLES",
+                    "enum": [
+                        "DOUBLES",
+                        "SINGLES"
+                    ]
+                },
+                "doubles": {
+                    "type": "string",
+                    "example": 2.864
+                },
+                "doublesProvisional": {
+                    "type": "boolean"
+                },
+                "doublesReliabilityScore": {
+                    "type": "number",
+                    "example": 10.0
+                },
+                "doublesVerified": {
+                    "type": "string",
+                    "example": 2.75
+                },
+                "provisionalRatings": {
+                    "$ref": "#/definitions/ProvisionalRating"
+                },
+                "singles": {
+                    "type": "string",
+                    "example": 4.125
+                },
+                "singlesProvisional": {
+                    "type": "boolean"
+                },
+                "singlesReliabilityScore": {
+                    "type": "number",
+                    "example": 10.0
+                },
+                "singlesVerified": {
+                    "type": "string",
+                    "example": 4.1
+                }
+            },
+            "title": "PlayerRatingResponse"
+        },
+        "PlayerResponse": {
+            "type": "object",
+            "required": [
+                "duprId",
+                "fullName",
+                "registered"
+            ],
+            "properties": {
+                "age": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 55
+                },
+                "displayUsername": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "distance": {
+                    "type": "string",
+                    "example": "Nearby"
+                },
+                "distanceInMiles": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 15.4
+                },
+                "duprId": {
+                    "type": "string",
+                    "example": "8M2YEL"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user@exmaple.com"
+                },
+                "enablePrivacy": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "firstName": {
+                    "type": "string",
+                    "example": "John"
+                },
+                "formattedAddress": {
+                    "type": "string",
+                    "example": "5800 PA-378, Center Valley, PA 18034, United States"
+                },
+                "fullName": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "gender": {
+                    "type": "string",
+                    "example": "MALE",
+                    "enum": [
+                        "FEMALE",
+                        "MALE"
+                    ]
+                },
+                "hand": {
+                    "type": "string",
+                    "example": "RIGHT",
+                    "enum": [
+                        "BOTH",
+                        "LEFT",
+                        "NONE",
+                        "RIGHT"
+                    ]
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 26518181881
+                },
+                "imageUrl": {
+                    "type": "string",
+                    "example": "https://dupr-dev.s3.amazonaws.com/profile/image.png"
+                },
+                "invited": {
+                    "type": "boolean"
+                },
+                "isLoggedInUser": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "isPlayer1": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "isSubstitute": {
+                    "type": "boolean"
+                },
+                "lastName": {
+                    "type": "string",
+                    "example": "Doe"
+                },
+                "latitude": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 72.34654645455
+                },
+                "longitude": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 19.55151584984
+                },
+                "lucraConnected": {
+                    "type": "boolean"
+                },
+                "partnerStatus": {
+                    "type": "string",
+                    "example": "INVITED/CONFIRMED/NOT_CONFIRMED/CANCELLED",
+                    "enum": [
+                        "ACTIVE",
+                        "CANCELLED",
+                        "COMPLETE",
+                        "CONFIRMED",
+                        "DELETED",
+                        "FORFEITED",
+                        "INACTIVE",
+                        "INVITED",
+                        "IN_PROGRESS",
+                        "MATCH_BYE",
+                        "NOT_CONFIRMED",
+                        "ONGOING",
+                        "PENDING",
+                        "SUSPENDED_TOS_13",
+                        "UPCOMING"
+                    ]
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "+14445785789"
+                },
+                "ratings": {
+                    "description": "Ratings data",
+                    "$ref": "#/definitions/PlayerRatingResponse"
+                },
+                "registered": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "registrationDetails": {
+                    "example": "user@exmaple.com",
+                    "$ref": "#/definitions/RegistrationResponse"
+                },
+                "registrationType": {
+                    "type": "string",
+                    "example": "INVITATION/UNCLAIMED",
+                    "enum": [
+                        "INVITATION",
+                        "UNCLAIMED"
+                    ]
+                },
+                "shortAddress": {
+                    "type": "string",
+                    "example": "Los Angels, CA"
+                },
+                "showRatingBanner": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "sponsor": {
+                    "$ref": "#/definitions/SponsorLogoResponse"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "ACTIVE",
+                        "CANCELLED",
+                        "COMPLETE",
+                        "CONFIRMED",
+                        "DELETED",
+                        "FORFEITED",
+                        "INACTIVE",
+                        "INVITED",
+                        "IN_PROGRESS",
+                        "MATCH_BYE",
+                        "NOT_CONFIRMED",
+                        "ONGOING",
+                        "PENDING",
+                        "SUSPENDED_TOS_13",
+                        "UPCOMING"
+                    ]
+                },
+                "substitutionDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PlayerResponse"
+                    }
+                },
+                "teamStatus": {
+                    "type": "string",
+                    "example": "ACTIVE/INACTIVE",
+                    "enum": [
+                        "ACTIVE",
+                        "CANCELLED",
+                        "COMPLETE",
+                        "CONFIRMED",
+                        "DELETED",
+                        "FORFEITED",
+                        "INACTIVE",
+                        "INVITED",
+                        "IN_PROGRESS",
+                        "MATCH_BYE",
+                        "NOT_CONFIRMED",
+                        "ONGOING",
+                        "PENDING",
+                        "SUSPENDED_TOS_13",
+                        "UPCOMING"
+                    ]
+                },
+                "username": {
+                    "type": "string",
+                    "example": "X AE A-XII"
+                },
+                "verifiedEmail": {
+                    "type": "boolean",
+                    "example": false
+                }
+            },
+            "title": "PlayerResponse"
+        },
+        "PlayersSortedRequest": {
+            "type": "object",
+            "required": [
+                "duprIds",
+                "sortBy"
+            ],
+            "properties": {
+                "duprIds": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "sortBy": {
+                    "type": "string"
+                }
+            },
+            "title": "PlayersSortedRequest"
+        },
+        "ProvisionalRating": {
+            "type": "object",
+            "properties": {
+                "doublesRating": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 3.5
+                },
+                "singlesRating": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 3.5
+                }
+            },
+            "title": "ProvisionalRating"
+        },
+        "RegistrationResponse": {
+            "type": "object",
+            "required": [
+                "eventRefundedAmount",
+                "isParticipant1",
+                "isWaitListed",
+                "registrationId"
+            ],
+            "properties": {
+                "eventRefundedAmount": {
+                    "type": "number",
+                    "example": "true/false"
+                },
+                "isParticipant1": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "isWaitListed": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "player1": {
+                    "$ref": "#/definitions/Participant"
+                },
+                "player2": {
+                    "$ref": "#/definitions/Participant"
+                },
+                "registrationId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 4684651981
+                }
+            },
+            "title": "RegistrationResponse"
+        },
+        "Role": {
+            "type": "object",
+            "properties": {
+                "created": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "permissions": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "$ref": "#/definitions/Permission"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "ACTIVE",
+                        "CANCELLED",
+                        "COMPLETE",
+                        "CONFIRMED",
+                        "DELETED",
+                        "FORFEITED",
+                        "INACTIVE",
+                        "INVITED",
+                        "IN_PROGRESS",
+                        "MATCH_BYE",
+                        "NOT_CONFIRMED",
+                        "ONGOING",
+                        "PENDING",
+                        "SUSPENDED_TOS_13",
+                        "UPCOMING"
+                    ]
+                }
+            },
+            "title": "Role"
+        },
+        "SingleWrapperOfExternalUserDetailResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Show this message to user."
+                },
+                "result": {
+                    "$ref": "#/definitions/ExternalUserDetailResponse"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "FAILURE",
+                        "REDIRECT",
+                        "SUCCESS"
+                    ]
+                }
+            },
+            "title": "SingleWrapperOfExternalUserDetailResponse"
+        },
+        "SingleWrapperOfPageOfExternalUserResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Show this message to user."
+                },
+                "result": {
+                    "$ref": "#/definitions/PageOfExternalUserResponse"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "FAILURE",
+                        "REDIRECT",
+                        "SUCCESS"
+                    ]
+                }
+            },
+            "title": "SingleWrapperOfPageOfExternalUserResponse"
+        },
+        "SingleWrapperOfTokenResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Show this message to user."
+                },
+                "result": {
+                    "$ref": "#/definitions/TokenResponse"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "FAILURE",
+                        "REDIRECT",
+                        "SUCCESS"
+                    ]
+                }
+            },
+            "title": "SingleWrapperOfTokenResponse"
+        },
+        "SingleWrapperOfUnit": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Show this message to user."
+                },
+                "result": {
+                    "$ref": "#/definitions/Unit"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "FAILURE",
+                        "REDIRECT",
+                        "SUCCESS"
+                    ]
+                }
+            },
+            "title": "SingleWrapperOfUnit"
+        },
+        "SponsorLogoResponse": {
+            "type": "object",
+            "properties": {
+                "buttonText": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "imageURL": {
+                    "type": "string"
+                },
+                "sponsorPopupHeading": {
+                    "type": "string"
+                },
+                "sponsorRedirectUrl": {
+                    "type": "string"
+                }
+            },
+            "title": "SponsorLogoResponse"
+        },
+        "TokenResponse": {
+            "type": "object",
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "expiry": {
+                    "type": "string",
+                    "example": "2020-03-04T17:21:16.000Z"
+                },
+                "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJSUzUxMiJ9."
+                }
+            },
+            "title": "TokenResponse"
+        },
+        "Unit": {
+            "type": "object",
+            "title": "Unit"
+        },
+        "UpdateProvisionalRatingRequest": {
+            "type": "object",
+            "required": [
+                "duprId"
+            ],
+            "properties": {
+                "duprId": {
+                    "type": "string",
+                    "example": "DXJDF"
+                },
+                "provisionalDoublesRating": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 3.5
+                },
+                "provisionalSinglesRating": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 3.5
+                }
+            },
+            "title": "UpdateProvisionalRatingRequest"
+        },
+        "User": {
+            "type": "object",
+            "required": [
+                "accountNonExpired",
+                "accountNonLocked",
+                "admin",
+                "authorities",
+                "credentialsNonExpired",
+                "displayUsername",
+                "email",
+                "enabled",
+                "fullName",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "accountNonExpired": {
+                    "type": "boolean"
+                },
+                "accountNonLocked": {
+                    "type": "boolean"
+                },
+                "admin": {
+                    "type": "boolean"
+                },
+                "authorities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/GrantedAuthority"
+                    }
+                },
+                "birthdate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "created": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "credentialsNonExpired": {
+                    "type": "boolean"
+                },
+                "customerKey": {
+                    "type": "string"
+                },
+                "displayUsername": {
+                    "type": "boolean"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "externalId": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string",
+                    "enum": [
+                        "FEMALE",
+                        "MALE"
+                    ]
+                },
+                "hand": {
+                    "type": "string",
+                    "enum": [
+                        "BOTH",
+                        "LEFT",
+                        "NONE",
+                        "RIGHT"
+                    ]
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "imageUrl": {
+                    "type": "string"
+                },
+                "isValidEmail": {
+                    "type": "boolean"
+                },
+                "isValidPhone": {
+                    "type": "boolean"
+                },
+                "isoCode": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "lucraConnected": {
+                    "type": "boolean"
+                },
+                "mediaId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "referralCode": {
+                    "type": "string"
+                },
+                "reliabilityScore": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "restricted": {
+                    "type": "boolean"
+                },
+                "role": {
+                    "$ref": "#/definitions/Role"
+                },
+                "secret": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "ACTIVE",
+                        "CANCELLED",
+                        "COMPLETE",
+                        "CONFIRMED",
+                        "DELETED",
+                        "FORFEITED",
+                        "INACTIVE",
+                        "INVITED",
+                        "IN_PROGRESS",
+                        "MATCH_BYE",
+                        "NOT_CONFIRMED",
+                        "ONGOING",
+                        "PENDING",
+                        "SUSPENDED_TOS_13",
+                        "UPCOMING"
+                    ]
+                },
+                "username": {
+                    "type": "string"
+                }
+            },
+            "title": "User"
+        },
+        "WinLossCount": {
+            "type": "object",
+            "required": [
+                "loss",
+                "total",
+                "win"
+            ],
+            "properties": {
+                "loss": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 21
+                },
+                "total": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 33
+                },
+                "win": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 12
+                }
+            },
+            "title": "WinLossCount"
+        }
+    }
+}
