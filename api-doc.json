@@ -5,7 +5,7 @@
         "version": "v1.0.0",
         "title": "DUPR APIs"
     },
-    "host": "https://prod.mydupr.com",
+    "host": "prod.mydupr.com",
     "tags": [
         {
             "name": "ApiRegistration",
@@ -126,6 +126,64 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ArrayWrapperOfExternalUserDetailResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/history": {
+            "post": {
+                "tags": [
+                    "Player Rating"
+                ],
+                "summary": "getPlayerRatingHistoryByUser",
+                "operationId": "getPlayerRatingHistoryByUserUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "default": "Bearer "
+                    },
+                    {
+                        "name": "duprId",
+                        "in": "query",
+                        "description": "duprId",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "limit",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "offset",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
                         }
                     },
                     "403": {
@@ -740,7 +798,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/SingleWrapperOfPageOfExternalUserResponse"
+                            "type": "object"
                         }
                     },
                     "403": {
@@ -788,7 +846,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/SingleWrapperOfExternalUserDetailResponse"
+                            "type": "object"
                         }
                     },
                     "403": {
@@ -982,7 +1040,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ArrayWrapperOfUser"
+                            "type": "object"
                         }
                     },
                     "403": {
@@ -1036,7 +1094,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/SingleWrapperOfUnit"
+                            "type": "object"
                         }
                     },
                     "403": {
@@ -1087,7 +1145,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/SingleWrapperOfUnit"
+                            "type": "object"
                         }
                     },
                     "403": {
@@ -1231,30 +1289,6 @@
             },
             "title": "ArrayWrapperOfPlayerResponse"
         },
-        "ArrayWrapperOfUser": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "example": "Show this message to user."
-                },
-                "results": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/User"
-                    }
-                },
-                "status": {
-                    "type": "string",
-                    "enum": [
-                        "FAILURE",
-                        "REDIRECT",
-                        "SUCCESS"
-                    ]
-                }
-            },
-            "title": "ArrayWrapperOfUser"
-        },
         "ClientHookRequest": {
             "type": "object",
             "required": [
@@ -1284,6 +1318,15 @@
                 "duprId"
             ],
             "properties": {
+                "coach": {
+                    "example": {
+                        "id": 12345,
+                        "metadata": {
+                            "name": "example"
+                        }
+                    },
+                    "$ref": "#/definitions/RatingCoach"
+                },
                 "duprId": {
                     "type": "string",
                     "example": "DXJDF"
@@ -1930,61 +1973,6 @@
             },
             "title": "ExternalUserRatingResponse"
         },
-        "ExternalUserResponse": {
-            "type": "object",
-            "required": [
-                "firstName",
-                "fullName",
-                "id",
-                "lastName"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "Austin, TX, USA",
-                    "description": "User location usually in form of city, state, country."
-                },
-                "age": {
-                    "type": "integer",
-                    "format": "int32",
-                    "example": 24,
-                    "description": "User's age"
-                },
-                "firstName": {
-                    "type": "string",
-                    "example": "John",
-                    "description": "First name of the user"
-                },
-                "fullName": {
-                    "type": "string",
-                    "example": "John Doe",
-                    "description": "Full name of user"
-                },
-                "gender": {
-                    "type": "string",
-                    "example": "MALE",
-                    "description": "User's gender",
-                    "enum": [
-                        "FEMALE",
-                        "MALE"
-                    ]
-                },
-                "id": {
-                    "type": "string",
-                    "example": "XOME32",
-                    "description": "Unique identifier"
-                },
-                "lastName": {
-                    "type": "string",
-                    "example": "Doe",
-                    "description": "Last name of the user"
-                },
-                "ratings": {
-                    "$ref": "#/definitions/ExternalUserRatingResponse"
-                }
-            },
-            "title": "ExternalUserResponse"
-        },
         "FindDuprIdByEmailRequest": {
             "type": "object",
             "required": [
@@ -2009,79 +1997,6 @@
                 }
             },
             "title": "GetProvisionalRatingRequest"
-        },
-        "GrantedAuthority": {
-            "type": "object",
-            "properties": {
-                "authority": {
-                    "type": "string"
-                }
-            },
-            "title": "GrantedAuthority"
-        },
-        "PageOfExternalUserResponse": {
-            "type": "object",
-            "required": [
-                "empty",
-                "hasMore",
-                "hasPrevious",
-                "limit",
-                "offset",
-                "total",
-                "totalValueRelation"
-            ],
-            "properties": {
-                "empty": {
-                    "type": "boolean",
-                    "example": false,
-                    "description": "Are results empty"
-                },
-                "hasMore": {
-                    "type": "boolean",
-                    "example": false,
-                    "description": "Are there any more results to fetch"
-                },
-                "hasPrevious": {
-                    "type": "boolean",
-                    "example": true,
-                    "description": "Is there any previous page"
-                },
-                "hits": {
-                    "type": "array",
-                    "description": "Array of results, can be empty.",
-                    "items": {
-                        "$ref": "#/definitions/ExternalUserResponse"
-                    }
-                },
-                "limit": {
-                    "type": "integer",
-                    "format": "int32",
-                    "example": 10,
-                    "description": "Limit value you sent in the request"
-                },
-                "offset": {
-                    "type": "integer",
-                    "format": "int32",
-                    "example": 90,
-                    "description": "Offset value you sent in the request"
-                },
-                "total": {
-                    "type": "integer",
-                    "format": "int64",
-                    "example": 100,
-                    "description": "Total number of results available in database"
-                },
-                "totalValueRelation": {
-                    "type": "string",
-                    "example": "GREATER_THAN_OR_EQUAL_TO",
-                    "description": "Relation to total results available.",
-                    "enum": [
-                        "EQUAL_TO",
-                        "GREATER_THAN_OR_EQUAL_TO"
-                    ]
-                }
-            },
-            "title": "PageOfExternalUserResponse"
         },
         "Participant": {
             "type": "object",
@@ -2187,18 +2102,6 @@
             },
             "title": "Participant"
         },
-        "Permission": {
-            "type": "object",
-            "properties": {
-                "operation": {
-                    "type": "string"
-                },
-                "resource": {
-                    "type": "string"
-                }
-            },
-            "title": "Permission"
-        },
         "PlayerRatingResponse": {
             "type": "object",
             "properties": {
@@ -2250,8 +2153,13 @@
             "type": "object",
             "required": [
                 "duprId",
+                "email",
+                "firstName",
                 "fullName",
-                "registered"
+                "lastName",
+                "registered",
+                "registrationDetails",
+                "registrationType"
             ],
             "properties": {
                 "age": {
@@ -2491,6 +2399,15 @@
         "ProvisionalRating": {
             "type": "object",
             "properties": {
+                "coach": {
+                    "example": {
+                        "id": 12345,
+                        "metadata": {
+                            "name": "example"
+                        }
+                    },
+                    "$ref": "#/definitions/RatingCoach"
+                },
                 "doublesRating": {
                     "type": "number",
                     "format": "float",
@@ -2503,6 +2420,24 @@
                 }
             },
             "title": "ProvisionalRating"
+        },
+        "RatingCoach": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "metadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            },
+            "title": "RatingCoach"
         },
         "RegistrationResponse": {
             "type": "object",
@@ -2539,94 +2474,6 @@
             },
             "title": "RegistrationResponse"
         },
-        "Role": {
-            "type": "object",
-            "properties": {
-                "created": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "permissions": {
-                    "type": "array",
-                    "uniqueItems": true,
-                    "items": {
-                        "$ref": "#/definitions/Permission"
-                    }
-                },
-                "status": {
-                    "type": "string",
-                    "enum": [
-                        "ACTIVE",
-                        "CANCELLED",
-                        "COMPLETE",
-                        "CONFIRMED",
-                        "DELETED",
-                        "FORFEITED",
-                        "INACTIVE",
-                        "INVITED",
-                        "IN_PROGRESS",
-                        "MATCH_BYE",
-                        "NOT_CONFIRMED",
-                        "ONGOING",
-                        "PENDING",
-                        "SUSPENDED_TOS_13",
-                        "UPCOMING"
-                    ]
-                }
-            },
-            "title": "Role"
-        },
-        "SingleWrapperOfExternalUserDetailResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "example": "Show this message to user."
-                },
-                "result": {
-                    "$ref": "#/definitions/ExternalUserDetailResponse"
-                },
-                "status": {
-                    "type": "string",
-                    "enum": [
-                        "FAILURE",
-                        "REDIRECT",
-                        "SUCCESS"
-                    ]
-                }
-            },
-            "title": "SingleWrapperOfExternalUserDetailResponse"
-        },
-        "SingleWrapperOfPageOfExternalUserResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "example": "Show this message to user."
-                },
-                "result": {
-                    "$ref": "#/definitions/PageOfExternalUserResponse"
-                },
-                "status": {
-                    "type": "string",
-                    "enum": [
-                        "FAILURE",
-                        "REDIRECT",
-                        "SUCCESS"
-                    ]
-                }
-            },
-            "title": "SingleWrapperOfPageOfExternalUserResponse"
-        },
         "SingleWrapperOfTokenResponse": {
             "type": "object",
             "properties": {
@@ -2647,27 +2494,6 @@
                 }
             },
             "title": "SingleWrapperOfTokenResponse"
-        },
-        "SingleWrapperOfUnit": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "example": "Show this message to user."
-                },
-                "result": {
-                    "$ref": "#/definitions/Unit"
-                },
-                "status": {
-                    "type": "string",
-                    "enum": [
-                        "FAILURE",
-                        "REDIRECT",
-                        "SUCCESS"
-                    ]
-                }
-            },
-            "title": "SingleWrapperOfUnit"
         },
         "SponsorLogoResponse": {
             "type": "object",
@@ -2707,16 +2533,21 @@
             },
             "title": "TokenResponse"
         },
-        "Unit": {
-            "type": "object",
-            "title": "Unit"
-        },
         "UpdateProvisionalRatingRequest": {
             "type": "object",
             "required": [
                 "duprId"
             ],
             "properties": {
+                "coach": {
+                    "example": {
+                        "id": 12345,
+                        "metadata": {
+                            "name": "example"
+                        }
+                    },
+                    "$ref": "#/definitions/RatingCoach"
+                },
                 "duprId": {
                     "type": "string",
                     "example": "DXJDF"
@@ -2733,162 +2564,6 @@
                 }
             },
             "title": "UpdateProvisionalRatingRequest"
-        },
-        "User": {
-            "type": "object",
-            "required": [
-                "accountNonExpired",
-                "accountNonLocked",
-                "admin",
-                "authorities",
-                "credentialsNonExpired",
-                "displayUsername",
-                "email",
-                "enabled",
-                "fullName",
-                "password",
-                "username"
-            ],
-            "properties": {
-                "accountNonExpired": {
-                    "type": "boolean"
-                },
-                "accountNonLocked": {
-                    "type": "boolean"
-                },
-                "admin": {
-                    "type": "boolean"
-                },
-                "authorities": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/GrantedAuthority"
-                    }
-                },
-                "birthdate": {
-                    "type": "string",
-                    "format": "date"
-                },
-                "created": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "credentialsNonExpired": {
-                    "type": "boolean"
-                },
-                "customerKey": {
-                    "type": "string"
-                },
-                "displayUsername": {
-                    "type": "boolean"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "enabled": {
-                    "type": "boolean"
-                },
-                "externalId": {
-                    "type": "string"
-                },
-                "firstName": {
-                    "type": "string"
-                },
-                "fullName": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "string",
-                    "enum": [
-                        "FEMALE",
-                        "MALE"
-                    ]
-                },
-                "hand": {
-                    "type": "string",
-                    "enum": [
-                        "BOTH",
-                        "LEFT",
-                        "NONE",
-                        "RIGHT"
-                    ]
-                },
-                "id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "imageUrl": {
-                    "type": "string"
-                },
-                "isValidEmail": {
-                    "type": "boolean"
-                },
-                "isValidPhone": {
-                    "type": "boolean"
-                },
-                "isoCode": {
-                    "type": "string"
-                },
-                "lastName": {
-                    "type": "string"
-                },
-                "lucraConnected": {
-                    "type": "boolean"
-                },
-                "mediaId": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "nickname": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "phoneNumber": {
-                    "type": "string"
-                },
-                "referralCode": {
-                    "type": "string"
-                },
-                "reliabilityScore": {
-                    "type": "integer",
-                    "format": "int32"
-                },
-                "restricted": {
-                    "type": "boolean"
-                },
-                "role": {
-                    "$ref": "#/definitions/Role"
-                },
-                "secret": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string",
-                    "enum": [
-                        "ACTIVE",
-                        "CANCELLED",
-                        "COMPLETE",
-                        "CONFIRMED",
-                        "DELETED",
-                        "FORFEITED",
-                        "INACTIVE",
-                        "INVITED",
-                        "IN_PROGRESS",
-                        "MATCH_BYE",
-                        "NOT_CONFIRMED",
-                        "ONGOING",
-                        "PENDING",
-                        "SUSPENDED_TOS_13",
-                        "UPCOMING"
-                    ]
-                },
-                "username": {
-                    "type": "string"
-                }
-            },
-            "title": "User"
         },
         "WinLossCount": {
             "type": "object",
